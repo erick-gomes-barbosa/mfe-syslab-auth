@@ -5,6 +5,6 @@
     "declarationDir": "dist"
   },
   "files": ["src/mfe-users-route.tsx"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "postcss.config.js"],
   "exclude": ["src/**/*.test*"]
 }

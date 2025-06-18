@@ -1,9 +1,6 @@
 export default function LabelForm({ title }) {
   return (
-    <label
-      className="
-  text-[#333333] text-sm select-none"
-    >
+    <label className="text-grayDark text-sm  max-sm320:text-[12px] select-none">
       {title}
     </label>
   );
