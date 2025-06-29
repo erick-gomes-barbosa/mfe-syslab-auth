@@ -1,26 +1,39 @@
+//Tela para cadastro e login de usuários
+
 import { useState } from "react";
-import SyslabLogo from "./assets/images/logo-redimensionada.png";
+import logoHorizontal from "./assets/images/logo-horizontal.png";
 import TextboxInput from "./components/inputs/textbox-input";
 import { useForm, SubmitHandler } from "react-hook-form";
 import LabelForm from "./components/labels/label-form";
 import InputSubmit from "./components/inputs/input-submit";
 import InputSelect from "./components/inputs/input-select";
 import InputTime from "./components/inputs/input-time";
-import LaboratoryImg from "./assets/images/img-laboratory.svg";
+import imgLaboratory from "./assets/images/img-laboratory.svg";
 
 //Dados do tipo de usuário
-const optionsOcupation = [
+const optionsOcupation: { name: string; id: number }[] = [
   { name: "Técnico", id: 1 },
   { name: "Professor", id: 2 },
   { name: "Aluno", id: 3 },
 ];
 
+interface FormValues {
+  email: string;
+  password: string;
+  registery: number;
+  name: string;
+  type: string;
+  entry_time: string;
+  departure_time: string;
+}
+
 export default function AuthPage() {
-  const [isloginComponent, setIsLoginComponent] = useState(false);
-  const { register, handleSubmit, reset } = useForm({
+  const [isloginComponent, setIsLoginComponent] = useState<boolean>(false);
+  const { register, handleSubmit, reset } = useForm<FormValues>({
     shouldFocusError: false,
   });
-  const setSelectButtonColor = () => {
+
+  const changeComponent = (): void => {
     if (isloginComponent == true) {
       setIsLoginComponent(false);
     } else {
@@ -30,13 +43,13 @@ export default function AuthPage() {
     reset();
   };
 
-  const submitForm = (data) => {
+  const submitForm: SubmitHandler<FormValues> = (data): void => {
     // console.log(data);
   };
   return (
     <>
       <div className="p-5">
-        <img src={SyslabLogo} alt="Logo da Syslab" />
+        <img src={logoHorizontal} alt="logo-horizontal" />
       </div>
       <div className="flex justify-center w-full h-[calc(100vh-5rem)]">
         <div className="flex justify-between max-w-[1500px] w-10/12">
@@ -46,7 +59,7 @@ export default function AuthPage() {
           >
             <div className="flex w-full font-bold mb-4 ">
               <button
-                onClick={setSelectButtonColor}
+                onClick={changeComponent}
                 className={`h-11 w-1/2 text-[#333333] ${
                   isloginComponent && "bg-[#F0F4F8] rounded-br-lg"
                 }`}
@@ -54,7 +67,7 @@ export default function AuthPage() {
                 Cadastro
               </button>
               <button
-                onClick={setSelectButtonColor}
+                onClick={changeComponent}
                 className={`h-11 w-1/2 text-[#333333] ${
                   isloginComponent ? "" : "bg-[#F0F4F8] rounded-bl-lg"
                 }`}
@@ -132,7 +145,6 @@ export default function AuthPage() {
                       options={optionsOcupation}
                       required={true}
                       register={register}
-                      defaultValue={null}
                     />
                   </div>
                   <div className="flex justify-between">
@@ -161,8 +173,8 @@ export default function AuthPage() {
             </div>
           </form>
           <img
-            src={LaboratoryImg}
-            alt="Imagem ilustrativa"
+            src={imgLaboratory}
+            alt="img-laboratory"
             className="max-lg:hidden min-w-[500px] w-7/12 max-w-[600px] select-none"
           />
         </div>
