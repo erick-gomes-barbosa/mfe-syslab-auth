@@ -9,6 +9,9 @@ import InputSubmit from "./components/inputs/input-submit";
 import InputSelect from "./components/inputs/input-select";
 import InputTime from "./components/inputs/input-time";
 import imgLaboratory from "./assets/images/img-laboratory.svg";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerUserSchema } from "./schema/register-user-schema";
+import { RegisterUserType } from "./types/register-user-type";
 
 //Dados do tipo de usuário
 const optionsOcupation: { name: string; id: number }[] = [
@@ -17,20 +20,16 @@ const optionsOcupation: { name: string; id: number }[] = [
   { name: "Aluno", id: 3 },
 ];
 
-interface FormValues {
-  email: string;
-  password: string;
-  registery: number;
-  name: string;
-  type: string;
-  entry_time: string;
-  departure_time: string;
-}
-
 export default function AuthPage() {
   const [isloginComponent, setIsLoginComponent] = useState<boolean>(false);
-  const { register, handleSubmit, reset } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<RegisterUserType>({
     shouldFocusError: false,
+    resolver: zodResolver(registerUserSchema),
   });
 
   const changeComponent = (): void => {
@@ -43,8 +42,14 @@ export default function AuthPage() {
     reset();
   };
 
-  const submitForm: SubmitHandler<FormValues> = (data): void => {
+  const submitForm = (data): void => {
+    // console.log("clicou");
     // console.log(data);
+    // reset();
+  };
+
+  const onError = (errors: any) => {
+    // console.log("Erros de validação:", errors);
   };
   return (
     <>
@@ -54,11 +59,12 @@ export default function AuthPage() {
       <div className="flex justify-center w-full h-[calc(100vh-5rem)]">
         <div className="flex justify-between max-w-[1500px] w-10/12">
           <form
-            onSubmit={handleSubmit(submitForm)}
+            onSubmit={handleSubmit(submitForm, onError)}
             className="flex flex-col rounded-3xl bg-[#2C5B8C26] max-w-96 h-11/12 w-11/12 m-auto pb-7 overflow-hidden "
           >
             <div className="flex w-full font-bold mb-4 ">
               <button
+                type="button"
                 onClick={changeComponent}
                 className={`h-11 w-1/2 text-[#333333] ${
                   isloginComponent && "bg-[#F0F4F8] rounded-br-lg"
@@ -67,6 +73,7 @@ export default function AuthPage() {
                 Cadastro
               </button>
               <button
+                type="button"
                 onClick={changeComponent}
                 className={`h-11 w-1/2 text-[#333333] ${
                   isloginComponent ? "" : "bg-[#F0F4F8] rounded-bl-lg"
@@ -106,6 +113,7 @@ export default function AuthPage() {
                     <TextboxInput
                       name="registery"
                       required={true}
+                      valueAsNumber={true}
                       type="text"
                       register={register}
                     />

@@ -11,4 +11,5 @@ module.exports = {
       "<rootDir>/../__mocks__/file-mock.ts",
   },
   setupFilesAfterEnv: ["@testing-library/jest-dom"],
+  transformIgnorePatterns: ["/node_modules/(?!(zod|@hookform)/)"],
 };

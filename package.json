@@ -53,8 +53,8 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.10",
     "@hookform/resolvers": "^5.1.1",
+    "@tailwindcss/postcss": "^4.1.10",
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
