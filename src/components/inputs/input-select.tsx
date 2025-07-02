@@ -5,7 +5,7 @@ export default function InputSelect({ options, name, required, register }) {
       className="rounded-[20px] px-3 h-7 w-full outline-[#2C5B8C] text-sm  bg-white select-none"
     >
       {options.map((option) => (
-        <option key={option.id} value={option.id}>
+        <option key={option.id} value={option.name}>
           {option.name}
         </option>
       ))}

@@ -10,8 +10,8 @@ import InputSelect from "./components/inputs/input-select";
 import InputTime from "./components/inputs/input-time";
 import imgLaboratory from "./assets/images/img-laboratory.svg";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerUserSchema } from "./schema/register-user-schema";
-import { RegisterUserType } from "./types/register-user-type";
+import { UserSchema } from "./schema/user-schema";
+import { UserType } from "./types/user-type";
 
 //Dados do tipo de usuário
 const optionsOcupation: { name: string; id: number }[] = [
@@ -27,9 +27,9 @@ export default function AuthPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<RegisterUserType>({
+  } = useForm<UserType>({
     shouldFocusError: false,
-    resolver: zodResolver(registerUserSchema),
+    resolver: zodResolver(UserSchema),
   });
 
   const changeComponent = (): void => {
