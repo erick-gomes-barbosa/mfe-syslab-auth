@@ -1,4 +1,4 @@
-//Tela para cadastro e login de usuários
+//Tela que permite cadastro e login de usuários
 
 import { useState } from "react";
 import logoHorizontal from "./assets/images/logo-horizontal.png";
@@ -6,18 +6,12 @@ import imgLaboratory from "./assets/images/img-laboratory.svg";
 import RegisterUserForm from "./components/forms/register-user-form";
 import LoginForm from "./components/forms/login-form";
 
-//Dados do tipo de usuário
-const optionsOcupation: { name: string; id: number }[] = [
-  { name: "Técnico", id: 1 },
-  { name: "Professor", id: 2 },
-  { name: "Aluno", id: 3 },
-];
-
 export default function AuthPage() {
-  const [isloginComponent, setIsLoginComponent] = useState<boolean>(false);
+  const [isLoginComponent, setIsLoginComponent] = useState<boolean>(false);
 
-  const changeComponent = (): void => {
-    if (isloginComponent == true) {
+  // Função para alternar entre o componente de login e o de cadastro
+  const changeAuthComponent = (): void => {
+    if (isLoginComponent == true) {
       setIsLoginComponent(false);
     } else {
       setIsLoginComponent(true);
@@ -31,10 +25,10 @@ export default function AuthPage() {
       </div>
       <div className="flex justify-center w-full h-[calc(100vh-5rem)] ">
         <div className="flex justify-between max-w-[1500px] w-10/12 ">
-          {isloginComponent ? (
-            <LoginForm onClickRegisterButton={changeComponent} />
+          {isLoginComponent ? (
+            <LoginForm onClickRegisterButton={changeAuthComponent} />
           ) : (
-            <RegisterUserForm onClickLoginButton={changeComponent} />
+            <RegisterUserForm onClickLoginButton={changeAuthComponent} />
           )}
           <img
             src={imgLaboratory}

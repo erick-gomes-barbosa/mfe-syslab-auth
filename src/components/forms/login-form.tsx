@@ -1,29 +1,33 @@
 import TextboxInput from "../inputs/textbox-input";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import LabelForm from "../labels/label-form";
 import InputSubmit from "../inputs/input-submit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "../../schema/login-schema";
 import { LoginType } from "../../types/login-type";
 
-export default function LoginForm({ onClickRegisterButton }) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<LoginType>({
+//Formulário de login
+export default function LoginForm({
+  onClickRegisterButton,
+}: {
+  onClickRegisterButton: () => void;
+}) {
+  const { register, handleSubmit, reset } = useForm<LoginType>({
     shouldFocusError: false,
     resolver: zodResolver(LoginSchema),
   });
 
-  const submitForm = (data): void => {
-    // console.log(data);
-    // reset();
+  //Função para tratar o envio do formulário
+  const submitForm: SubmitHandler<LoginType> = (data): void => {
+    //Adicionar lógica para fazer o login
+    // console.log("Dados do login:", data);
+    reset();
   };
 
-  const onError = (errors: any) => {
-    // console.log("Erros de validação:", errors);
+  //Função para tratar erros de validação
+  const onError = (errors: FieldErrors<LoginType>) => {
+    //Adicionar lógica para tratar erros de validação
+    console.error("Erros de validação:", errors);
   };
   return (
     <form

@@ -4,6 +4,7 @@ import { isValidDepartureTime } from "../validators/is-valid-departure-time";
 import { emailField } from "../fields/email-field";
 import { passwordField } from "../fields/password-field";
 
+// Schema de validação para o cadastro de usuários
 export const UserSchema = z
   .object({
     //Validação do número de matrícula do usuário
@@ -23,6 +24,7 @@ export const UserSchema = z
     //Validação de nome
     name: z
       .string()
+      .trim()
       .regex(
         /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)+$/,
         "O nome deve possuir sobrenome e deve conter apenas letras alfabéticas"

@@ -1,5 +1,5 @@
 import TextboxInput from "../inputs/textbox-input";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import LabelForm from "../labels/label-form";
 import InputSubmit from "../inputs/input-submit";
 import InputSelect from "../inputs/input-select";
@@ -9,30 +9,29 @@ import { UserSchema } from "../../schema/user-schema";
 import { UserType } from "../../types/user-type";
 
 //Dados do tipo de usuário
-const optionsOcupation: { name: string; id: number }[] = [
-  { name: "Técnico", id: 1 },
-  { name: "Professor", id: 2 },
-  { name: "Aluno", id: 3 },
+const optionsOcupation: { name: string; key: number }[] = [
+  { name: "Técnico", key: 1 },
+  { name: "Professor", key: 2 },
+  { name: "Aluno", key: 3 },
 ];
 
+//Formulário de cadastro de usuário
 export default function RegisterUserForm({ onClickLoginButton }) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<UserType>({
+  const { register, handleSubmit, reset } = useForm<UserType>({
     shouldFocusError: false,
     resolver: zodResolver(UserSchema),
   });
 
-  const submitForm = (data): void => {
-    // console.log(data);
-    reset();
+  //Função para tratar o envio do formulário
+  const submitForm: SubmitHandler<UserType> = (data): void => {
+    // console.log("Dados do usuário:", data);
+    // reset();
   };
 
-  const onError = (errors: any) => {
-    // console.log("Erros de validação:", errors);
+  //Função para tratar erros de validação
+  const onError = (errors: FieldErrors<UserType>) => {
+    //Adicionar lógica para tratar erros de validação
+    console.error("Erros de validação:", errors);
   };
   return (
     <form
