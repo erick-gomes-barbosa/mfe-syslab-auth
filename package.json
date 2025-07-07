@@ -53,13 +53,16 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@hookform/resolvers": "^5.1.1",
+    "@nhost/nhost-js": "^3.3.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/systemjs": "^6.1.1",
     "@types/webpack-env": "^1.16.2",
+    "graphql": "^16.11.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.57.0",
