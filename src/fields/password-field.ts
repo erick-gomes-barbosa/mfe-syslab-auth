@@ -1,5 +1,6 @@
 // fields.ts
 import { z } from "zod";
+import { hashSync } from "bcryptjs";
 
 export const passwordField = z
   .string()
@@ -10,4 +11,5 @@ export const passwordField = z
   .regex(
     /[!@#$%^&*(),.?":{}|<>_\-+=\\[\]\/~`]/,
     "A senha deve conter pelo menos um caractere especial"
-  );
+  )
+  .transform((password) => hashSync(password, 12));

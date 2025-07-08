@@ -41,13 +41,17 @@ export const UserSchema = z
         (entry_time) => {
           const isValidEntryTime = isValidOpeningHours(entry_time);
           //Retorna o horário de entrada adaptado para o tipo timetz
-          if (isValidEntryTime) return entry_time + ":00-3:00";
+          if (isValidEntryTime) return entry_time;
         },
         { message: "Horário de entrada inválido" }
-      ),
+      )
+      .transform((entryTime) => entryTime + ":00-3:00"),
 
     //Validação do horário de saída do usuário
-    departure_time: z.string().regex(/^\d{2}:\d{2}$/),
+    departure_time: z
+      .string()
+      .regex(/^\d{2}:\d{2}$/)
+      .transform((departureTime) => departureTime + ":00-3:00"),
   })
   .superRefine((data, ctx) => {
     const departureTime = data.departure_time;
