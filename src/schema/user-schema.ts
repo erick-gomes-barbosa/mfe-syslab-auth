@@ -40,7 +40,8 @@ export const UserSchema = z
       .refine(
         (entry_time) => {
           const isValidEntryTime = isValidOpeningHours(entry_time);
-          if (isValidEntryTime) return entry_time;
+          //Retorna o horário de entrada adaptado para o tipo timetz
+          if (isValidEntryTime) return entry_time + ":00-3:00";
         },
         { message: "Horário de entrada inválido" }
       ),
@@ -54,7 +55,8 @@ export const UserSchema = z
 
     const departureTimeIsValid = isValidDepartureTime(entryTime, departureTime);
 
-    if (departureTimeIsValid) return departureTime;
+    //Retorna o horário de saída adaptado para o tipo timetz
+    if (departureTimeIsValid) return departureTime + ":00-3:00";
 
     ctx.addIssue({
       path: ["departure_time"],

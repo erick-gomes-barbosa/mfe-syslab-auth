@@ -7,6 +7,7 @@ import InputTime from "../inputs/input-time";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchema } from "../../schema/user-schema";
 import { UserType } from "../../types/user-type";
+import { useInsertUserFunction } from "../../repositories/user";
 
 //Dados do tipo de usuário
 const optionsOcupation: { name: string; key: number }[] = [
@@ -22,9 +23,12 @@ export default function RegisterUserForm({ onClickLoginButton }) {
     resolver: zodResolver(UserSchema),
   });
 
+  const { insert, error, loading } = useInsertUserFunction();
   //Função para tratar o envio do formulário
-  const submitForm: SubmitHandler<UserType> = (data): void => {
-    // console.log("Dados do usuário:", data);
+  const submitForm: SubmitHandler<UserType> = async (data): Promise<void> => {
+    const result = insert(data);
+
+    // if (!loading) console.log(result);
     // reset();
   };
 

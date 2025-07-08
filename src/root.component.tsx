@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React from "react";
 import { ApolloProvider } from "@apollo/client";
 import { apolloPublicClient } from "./api/apolloClient";
 import AuthPage from "./pages";
