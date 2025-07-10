@@ -26,4 +26,13 @@ const INSERT_USER = gql`
   }
 `;
 
-export { INSERT_USER };
+//Query para verificar se o usuário já existe
+const GET_USER_BY_EMAIL = gql`
+  query ($_eq: String) {
+    system_user(where: { email: { _eq: $_eq } }) {
+      id
+    }
+  }
+`;
+
+export { INSERT_USER, GET_USER_BY_EMAIL };

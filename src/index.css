@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "tailwindcss-animated";
 
 @font-face {
   font-family: "Nunito";

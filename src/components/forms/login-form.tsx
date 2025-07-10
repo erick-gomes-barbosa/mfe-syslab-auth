@@ -32,7 +32,7 @@ export default function LoginForm({
   return (
     <form
       onSubmit={handleSubmit(submitForm, onError)}
-      className="flex flex-col rounded-3xl bg-[#2C5B8C26] max-w-96 h-11/12 w-11/12 m-auto pb-7 overflow-hidden "
+      className="flex flex-col rounded-3xl bg-[#2C5B8C26] max-w-96 h-11/12 w-11/12 m-auto pb-7 overflow-hidden animate-fade-right "
     >
       <div className="flex w-full font-bold mb-4 ">
         <button
@@ -44,7 +44,7 @@ export default function LoginForm({
         </button>
         <button
           type="button"
-          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-bl-lg`}
+          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-bl-lg cursor-default`}
         >
           Login
         </button>

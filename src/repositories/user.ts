@@ -12,7 +12,7 @@ export function InsertUserFunction() {
         variables: values,
       });
 
-      return response.data;
+      return response.data?.insert_system_user_one;
     } catch (error) {}
   };
 
