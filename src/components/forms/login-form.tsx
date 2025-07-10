@@ -21,6 +21,7 @@ export default function LoginForm({
   const submitForm: SubmitHandler<LoginType> = (data): void => {
     //Adicionar lógica para fazer o login
     // console.log("Dados do login:", data);
+
     reset();
   };
 
@@ -38,13 +39,13 @@ export default function LoginForm({
         <button
           type="button"
           onClick={onClickRegisterButton}
-          className={`h-11 w-1/2 text-[#333333]`}
+          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-br-lg`}
         >
           Cadastro
         </button>
         <button
           type="button"
-          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-bl-lg cursor-default`}
+          className={`h-11 w-1/2 text-[#333333] cursor-default`}
         >
           Login
         </button>

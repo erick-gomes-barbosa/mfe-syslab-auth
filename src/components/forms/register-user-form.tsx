@@ -10,6 +10,7 @@ import { UserType } from "../../types/user-type";
 import { InsertUserFunction } from "../../repositories/user";
 import { useState } from "react";
 import RegisterSucessModal from "../modals/register-sucess-modal";
+import RegisterFormErrorModal from "../modals/register-form-error-modal";
 import RegisterErrorModal from "../modals/register-error-modal";
 
 //Dados do tipo de usuário
@@ -27,24 +28,23 @@ interface FieldsFormErrors {
   departure_time: boolean;
 }
 
+const initialErrorsForm = {
+  registery: false,
+  name: false,
+  email: false,
+  password: false,
+  entry_time: false,
+  departure_time: false,
+};
+
 //Formulário de cadastro de usuário
 export default function RegisterUserForm({ onClickLoginButton }) {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [fieldsFormErrors, setFieldsFormErrors] = useState<FieldsFormErrors>({
-    registery: false,
-    name: false,
-    email: false,
-    password: false,
-    entry_time: false,
-    departure_time: false,
-  });
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<UserType>({
+  const [showFormErrorModal, setShowFormErrorModal] = useState(false);
+  const [showRegisterErrorModal, setShowRegisterErrorModal] = useState(false);
+  const [fieldsFormErrors, setFieldsFormErrors] =
+    useState<FieldsFormErrors>(initialErrorsForm);
+  const { register, handleSubmit, reset, clearErrors } = useForm<UserType>({
     shouldFocusError: false,
     resolver: zodResolver(UserSchema),
   });
@@ -57,10 +57,13 @@ export default function RegisterUserForm({ onClickLoginButton }) {
       const result = await insert(data);
 
       if (!result?.email) {
-        //colocar log de erro
-        // console.log("Usuário cadastrado com sucesso:", result);
+        setShowRegisterErrorModal(true);
+        setTimeout(() => {
+          setShowRegisterErrorModal(false);
+        }, 2500);
         return null;
       }
+
       //exibe modal de sucesso por 2 segundos
       setShowSuccessModal(true);
       setTimeout(() => {
@@ -85,12 +88,16 @@ export default function RegisterUserForm({ onClickLoginButton }) {
     if (errors.departure_time)
       setFieldsFormErrors((prev) => ({ ...prev, departure_time: true }));
 
-    setShowErrorModal(true);
+    setShowFormErrorModal(true);
     setTimeout(() => {
-      setShowErrorModal(false);
+      setShowFormErrorModal(false);
     }, 2500);
 
     console.error("Erros de validação:", errors);
+    setTimeout(() => {
+      clearErrors();
+      setFieldsFormErrors(initialErrorsForm);
+    }, 2500);
   };
   return (
     <form
@@ -100,14 +107,14 @@ export default function RegisterUserForm({ onClickLoginButton }) {
       <div className="flex w-full font-bold mb-4 ">
         <button
           type="button"
-          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-br-lg cursor-default `}
+          className={`h-11 w-1/2 text-[#333333] cursor-default `}
         >
           Cadastro
         </button>
         <button
           type="button"
           onClick={onClickLoginButton}
-          className={`h-11 w-1/2 text-[#333333] `}
+          className={`h-11 w-1/2 text-[#333333] bg-[#F0F4F8] rounded-bl-lg `}
         >
           Login
         </button>
@@ -179,10 +186,17 @@ export default function RegisterUserForm({ onClickLoginButton }) {
         <InputSubmit />
       </div>
 
-      <RegisterErrorModal isOpen={showErrorModal} fields={fieldsFormErrors} />
+      <RegisterFormErrorModal
+        isOpen={showFormErrorModal}
+        fields={fieldsFormErrors}
+      />
       <RegisterSucessModal
         text="Usuário cadastrado com sucesso!"
         isOpen={showSuccessModal}
+      />
+      <RegisterErrorModal
+        isOpen={showRegisterErrorModal}
+        text="Erro ao se cadastrar"
       />
     </form>
   );
