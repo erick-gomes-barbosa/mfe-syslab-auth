@@ -7,11 +7,12 @@ import InputTime from "../inputs/input-time";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchema } from "../../schema/user-schema";
 import { UserType } from "../../types/user-type";
-import { InsertUserFunction } from "../../repositories/user";
+import { UpdateRegisterUserFunction } from "../../repositories/user";
 import { useState } from "react";
 import RegisterSucessModal from "../modals/register-sucess-modal";
 import RegisterFormErrorModal from "../modals/register-form-error-modal";
 import RegisterErrorModal from "../modals/register-error-modal";
+import { nhost } from "../../api/nhost";
 
 //Dados do tipo de usuário
 const optionsOcupation: { name: string; key: number }[] = [
@@ -19,6 +20,7 @@ const optionsOcupation: { name: string; key: number }[] = [
   { name: "Professor", key: 2 },
   { name: "Aluno", key: 3 },
 ];
+
 interface FieldsFormErrors {
   registery: boolean;
   name: boolean;
@@ -28,6 +30,7 @@ interface FieldsFormErrors {
   departure_time: boolean;
 }
 
+//Estado inicial dos erros
 const initialErrorsForm = {
   registery: false,
   name: false,
@@ -49,14 +52,42 @@ export default function RegisterUserForm({ onClickLoginButton }) {
     resolver: zodResolver(UserSchema),
   });
 
-  const { insert } = InsertUserFunction();
+  const { updateUserRegister, error: updateUserRegisterError } =
+    UpdateRegisterUserFunction();
 
   //Função para tratar o envio do formulário
   const submitForm: SubmitHandler<UserType> = async (data): Promise<void> => {
     try {
-      const result = await insert(data);
+      const {
+        email,
+        password,
+        registery,
+        username,
+        usertype,
+        entry_time,
+        departure_time,
+      } = data;
 
-      if (!result?.email) {
+      //limpa a sessão caso exista alguma
+      await nhost.auth.signOut();
+      const { session, error } = await nhost.auth.signUp({
+        email,
+        password,
+      });
+
+      const userId = session?.user.id;
+
+      const response = await updateUserRegister({
+        userId,
+        registery,
+        username,
+        usertype,
+        entry_time,
+        departure_time,
+      });
+
+      //Tratativas de erro do singup e do response
+      if (error || !response.id) {
         setShowRegisterErrorModal(true);
         setTimeout(() => {
           setShowRegisterErrorModal(false);
@@ -64,7 +95,6 @@ export default function RegisterUserForm({ onClickLoginButton }) {
         return null;
       }
 
-      //exibe modal de sucesso por 2 segundos
       setShowSuccessModal(true);
       setTimeout(() => {
         setShowSuccessModal(false);
@@ -79,7 +109,8 @@ export default function RegisterUserForm({ onClickLoginButton }) {
   const onError = (errors: FieldErrors<UserType>) => {
     if (errors.registery)
       setFieldsFormErrors((prev) => ({ ...prev, registery: true }));
-    if (errors.name) setFieldsFormErrors((prev) => ({ ...prev, name: true }));
+    if (errors.username)
+      setFieldsFormErrors((prev) => ({ ...prev, name: true }));
     if (errors.email) setFieldsFormErrors((prev) => ({ ...prev, email: true }));
     if (errors.password)
       setFieldsFormErrors((prev) => ({ ...prev, password: true }));
@@ -133,7 +164,7 @@ export default function RegisterUserForm({ onClickLoginButton }) {
         <div>
           <LabelForm title="Nome Completo:" />
           <TextboxInput
-            name="name"
+            name="username"
             required={true}
             type="text"
             register={register}
@@ -161,7 +192,7 @@ export default function RegisterUserForm({ onClickLoginButton }) {
         <div>
           <LabelForm title="Ocupação:" />
           <InputSelect
-            name="type"
+            name="usertype"
             options={optionsOcupation}
             required={true}
             register={register}

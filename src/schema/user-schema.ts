@@ -22,7 +22,7 @@ export const UserSchema = z
     password: passwordField,
 
     //Validação de nome
-    name: z
+    username: z
       .string()
       .trim()
       .regex(
@@ -31,7 +31,7 @@ export const UserSchema = z
       ),
 
     //Validação do tipo de usuário
-    type: z.enum(["Administrador", "Técnico", "Aluno", "Professor"]),
+    usertype: z.enum(["Administrador", "Técnico", "Aluno", "Professor"]),
 
     //Validação do horário de entrada do usuário
     entry_time: z
