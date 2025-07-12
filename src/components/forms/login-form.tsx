@@ -1,10 +1,14 @@
 import TextboxInput from "../inputs/textbox-input";
-import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import { useForm, SubmitHandler, FieldErrors, set } from "react-hook-form";
 import LabelForm from "../labels/label-form";
 import InputSubmit from "../inputs/input-submit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "../../schema/login-schema";
 import { LoginType } from "../../types/login-type";
+import { nhost } from "../../api/nhost";
+import LoginSucessModal from "../modals/login-sucess-modal";
+import { useState } from "react";
+import LoginErrorModal from "../modals/login-error-modal";
 
 //Formulário de login
 export default function LoginForm({
@@ -12,27 +16,52 @@ export default function LoginForm({
 }: {
   onClickRegisterButton: () => void;
 }) {
-  const { register, handleSubmit, reset } = useForm<LoginType>({
+  const { register, handleSubmit, reset, clearErrors } = useForm<LoginType>({
     shouldFocusError: false,
     resolver: zodResolver(LoginSchema),
   });
+  const [showLoginSucessModal, setShowLoginSucessModal] =
+    useState<boolean>(false);
+  const [showLoginErrorModal, setShowLoginErrorModal] =
+    useState<boolean>(false);
 
   //Função para tratar o envio do formulário
-  const submitForm: SubmitHandler<LoginType> = (data): void => {
-    //Adicionar lógica para fazer o login
-    // console.log("Dados do login:", data);
+  const submitForm: SubmitHandler<LoginType> = async (data): Promise<void> => {
+    try {
+      const { email, password } = data;
+      await nhost.auth.signOut(); // Limpa a sessão atual, se houver
+      const response = await nhost.auth.signIn({
+        email,
+        password,
+      });
+
+      if (response.session.accessToken) {
+        setShowLoginSucessModal(true);
+        setTimeout(() => {
+          setShowLoginSucessModal(false);
+          //direcionar para home do usuário comum ou admin
+          return null;
+        }, 2500);
+
+        if (response.session == null) {
+          setShowLoginErrorModal(true);
+        }
+      }
+    } catch (error) {
+      setShowLoginErrorModal(true);
+    }
+
     reset();
   };
 
   //Função para tratar erros de validação
   const onError = (errors: FieldErrors<LoginType>) => {
-    //Adicionar lógica para tratar erros de validação
-    console.error("Erros de validação:", errors);
+    setShowLoginErrorModal(true);
   };
   return (
     <form
       onSubmit={handleSubmit(submitForm, onError)}
-      className="flex flex-col rounded-3xl bg-[#2C5B8C26] max-w-96 h-11/12 w-11/12 m-auto pb-7 overflow-hidden "
+      className=" relative flex flex-col rounded-3xl bg-[#2C5B8C26] max-w-96 h-11/12 w-11/12 m-auto pb-7 overflow-hidden "
     >
       <div className="flex w-full font-bold mb-4 ">
         <button
@@ -70,6 +99,14 @@ export default function LoginForm({
       <div className="flex justify-center">
         <InputSubmit text="Login" />
       </div>
+      <LoginSucessModal isOpen={showLoginSucessModal} />
+      <LoginErrorModal
+        isOpen={showLoginErrorModal}
+        onClickClose={() => {
+          setShowLoginErrorModal(false);
+          clearErrors();
+        }}
+      />
     </form>
   );
 }
