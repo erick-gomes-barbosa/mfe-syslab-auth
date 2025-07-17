@@ -5,6 +5,9 @@ import InputSubmit from "../inputs/input-submit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "../../schema/login-schema";
 import { LoginType } from "../../types/login-type";
+import { nhost } from "../../api/nhost";
+import { useState } from "react";
+import LoginErrorModal from "../modals/login-error-modal";
 
 //Formulário de login
 export default function LoginForm({
@@ -12,15 +15,49 @@ export default function LoginForm({
 }: {
   onClickRegisterButton: () => void;
 }) {
+  const [showLoginSucessModal, setShowLoginSucessModal] =
+    useState<boolean>(false);
+  const [showLoginErrorModal, setShowLoginErrorModal] =
+    useState<boolean>(false);
   const { register, handleSubmit, reset } = useForm<LoginType>({
     shouldFocusError: false,
     resolver: zodResolver(LoginSchema),
   });
 
   //Função para tratar o envio do formulário
-  const submitForm: SubmitHandler<LoginType> = (data): void => {
-    //Adicionar lógica para fazer o login
-    // console.log("Dados do login:", data);
+  const submitForm: SubmitHandler<LoginType> = async (data): Promise<void> => {
+    try {
+      const { email, password } = data;
+      await nhost.auth.signOut(); // Limpa a sessão atual, se houver
+      const response = await nhost.auth.signIn({
+        email,
+        password,
+      });
+
+      if (response.session.accessToken) {
+        setShowLoginSucessModal(true);
+        setTimeout(() => {
+          setShowLoginSucessModal(false);
+          //direcionar para home do usuário comum ou admin
+          return null;
+        }, 2500);
+
+        if (response.session == null) {
+          setShowLoginErrorModal(true);
+        }
+
+        setTimeout(() => {
+          console.log("teste:", response?.session?.user?.defaultRole);
+          if (response?.session?.user?.defaultRole === "adm") {
+            window.location.pathname = "/admin";
+            return;
+          }
+          window.location.pathname = "/home";
+        }, 1000);
+      }
+    } catch (error) {
+      setShowLoginErrorModal(true);
+    }
 
     reset();
   };
@@ -28,6 +65,7 @@ export default function LoginForm({
   //Função para tratar erros de validação
   const onError = (errors: FieldErrors<LoginType>) => {
     //Adicionar lógica para tratar erros de validação
+    setShowLoginErrorModal(true);
     console.error("Erros de validação:", errors);
   };
   return (
@@ -71,6 +109,10 @@ export default function LoginForm({
       <div className="flex justify-center">
         <InputSubmit text="Login" />
       </div>
+      <LoginErrorModal
+        isOpen={showLoginErrorModal}
+        onClickClose={() => setShowLoginErrorModal(false)}
+      />
     </form>
   );
 }
