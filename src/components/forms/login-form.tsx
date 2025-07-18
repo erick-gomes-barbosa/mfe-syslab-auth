@@ -47,7 +47,6 @@ export default function LoginForm({
         }
 
         setTimeout(() => {
-          console.log("teste:", response?.session?.user?.defaultRole);
           if (response?.session?.user?.defaultRole === "adm") {
             window.location.pathname = "/admin";
             return;
